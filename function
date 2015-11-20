@@ -1,0 +1,3 @@
+function _g(e) {
+	return "string" == typeof e ? document.getElementById(e) : e
+}
