@@ -1,3 +1,20 @@
 function _g(e) {
 	return "string" == typeof e ? document.getElementById(e) : e
 }
+
+function addClass(e, t) { //事件
+	var n = e.className;
+	return new RegExp("(^|\\s)" + t + "(\\s|$)", "i").test(n) || (e.className = n + (n.length > 0 ? " " : "") + t), e.className
+}
+function removeClass(e, t) {
+	var n = new RegExp("(^|\\s)" + t + "(\\s|$)", "i");
+	return e.className = e.className.replace(n, " ").replace(/^\s+|\s+$/g, ""), e.className
+}
+function addEvent(e, t, n) {
+	(addEvent = e.addEventListener ?
+	function(e, t, n) {
+		e.addEventListener(t, n, !1)
+	} : function(e, t, n) {
+		e.attachEvent("on" + t, n)
+	})(e, t, n)
+}
