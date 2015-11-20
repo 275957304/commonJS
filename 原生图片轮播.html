@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="gbk"> 
+<meta name="robots" content="all" />
+<meta name="author" content="Tencent-TGideas" />
+<meta name="Copyright" content="Tencent" />
+<title>图片轮播</title>
+<!-- 设计：missmeng | 重构：jacobtan | 创建：20151112  | 团队博客：http://tgideas.qq.com -->
+<style>
+body,h1,h2,h3,h4,p,ul,ol,li{margin:0;padding:0;}
+li{list-style:none;}
+img{border:0;}
+a{text-decoration:none;}
+a:hover{color:#c00;text-decoration:underline;}
+body{background:#000;font:12px/1.5 Tahoma,'\5FAE\8F6F\96C5\9ED1';padding-top:67px;}
+.htxt{height:0;overflow:hidden;}
+
+.wrapper{min-width:1000px;max-width:1920px;margin:0 auto;position:relative;font-size:14px;}
+.title5{position:absolute;top:55px;left:50%;margin-left:-200px;width:378px;height:63px;line-height:190px;overflow:hidden;background:url(http://ossweb-img.qq.com/images/yl/act/a20151112postal/spr.png) no-repeat -146px 0;}
+.slides{width:100%;height:652px;*zoom:1;overflow:hidden;position:relative;}
+.slide{width:1920px;height:655px;position:absolute;top:0;left:50%;margin-left:-960px;filter:alpha(opacity=0);opacity:0;}
+.scur{filter:alpha(opacity=100);opacity:1;z-index:2;-webkit-transition:opacity .5s ease-in-out;}
+.stg{position:absolute;z-index:3;bottom:18px;left:50%;width:260px;margin-left:-130px;}
+.stg i{float:left;width:26px;height:24px;overflow:hidden;cursor:pointer;background:url(about:blank);}
+.pgs{position:absolute;top:205px;width:40px;height:69px;z-index:3;background:url(http://ossweb-img.qq.com/images/yl/act/a20151112postal/spr.png) no-repeat;cursor:pointer;}
+.pprev{left:75px;}
+.pnext{right:75px;background-position:-42px 0;}
+</style>
+</head>
+<body>
+
+<div class="wrapper">    
+    <div class="slides" id="slidew">
+        <div class="slide scur" id="sld1"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s1.jpg" width="1920" height="655" alt="国战志刚 九国性格" /></div>
+        <div class="slide" id="sld2"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s2.jpg" width="1920" height="655" alt="燕州国 狂傲本色" /></div>
+        <div class="slide" id="sld3"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s3.jpg" width="1920" height="655" alt="徐州国 众志成城" /></div>
+        <div class="slide" id="sld4"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s4.jpg" width="1920" height="655" alt="幽州国 踏平一切" /></div>
+        <div class="slide" id="sld5"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s5.jpg" width="1920" height="655" alt="益州国 傲然不屈" /></div>
+        <div class="slide" id="sld6"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s6.jpg" width="1920" height="655" alt="荆州国 一往无前" /></div>
+        <div class="slide" id="sld7"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s7.jpg" width="1920" height="655" alt="江州国 勇猛无畏" /></div>
+        <div class="slide" id="sld8"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s8.jpg" width="1920" height="655" alt="青州国 智取江山" /></div>
+        <div class="slide" id="sld9"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s9.jpg" width="1920" height="655" alt="扬州国 霸气磅礴" /></div>
+        <div class="slide" id="sld10"><img src="http://ossweb-img.qq.com/images/yl/act/a20151112postal/s10.jpg" width="1920" height="655" alt="豫州国 狂野之心" /></div>
+        <div class="stg" id="stg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="pgs pprev" id="pprev"></p><p class="pgs pnext" id="pnext"></p>
+    </div>
+</div>
+
+<script>
+
+function _g(e) {
+	return "string" == typeof e ? document.getElementById(e) : e
+}
+
+function addClass(e, t) {
+	var n = e.className;
+	return new RegExp("(^|\\s)" + t + "(\\s|$)", "i").test(n) || (e.className = n + (n.length > 0 ? " " : "") + t), e.className
+}
+function removeClass(e, t) {
+	var n = new RegExp("(^|\\s)" + t + "(\\s|$)", "i");
+	return e.className = e.className.replace(n, " ").replace(/^\s+|\s+$/g, ""), e.className
+}
+
+function addEvent(e, t, n) {
+	(addEvent = e.addEventListener ?
+	function(e, t, n) {
+		e.addEventListener(t, n, !1)
+	} : function(e, t, n) {
+		e.attachEvent("on" + t, n)
+	})(e, t, n)
+}
+
+//轮播图
+slide();
+function slide(){
+    var _wp = _g("slidew"),_tgs = _g("stg").getElementsByTagName("i"), _len = _tgs.length, _last = 0, _prev = _g("pprev"), _next = _g("pnext"), _timer;
+    for (var i=0; i<_len; i++){
+        addEvent(_tgs[i],"click",(function(n){
+                return function(){
+                    _exs(n);
+                }
+            })(i)
+        );
+    }
+    function _exs(t){
+        if(t===_last) return;
+        removeClass(_g("sld"+(_last+1)),"scur");
+        addClass(_g("sld"+(t+1)),"scur");
+        _last = t;
+    }
+    addEvent(_prev,"click",_gprev);
+    addEvent(_next,"click",_gnext);
+
+    function _gprev(){
+        var _t = (_last-1)<0 ? (_len-1) : (_last-1);
+        _exs(_t)
+    }
+
+    function _gnext(){
+        var _t = (_last+1)>(_len-1) ? 0 : (_last+1);
+        _exs(_t)
+    }
+
+    function _play(){
+        _timer = setInterval(function(){
+            _gnext();
+        },3000);
+	}
+	addEvent(_wp, "mouseover", function(){ clearTimeout(_timer); });
+	addEvent(_wp, "mouseout", function(){ _play(); });
+	_play();
+
+}
+
+</script>
+</body>
+</html>
